@@ -1,5 +1,6 @@
 route53:
     image: bshaw/route-53-dyndns
+    container_name: route53
     restart: always
     environment:
         - AWS_ACCESS_KEY_ID=
