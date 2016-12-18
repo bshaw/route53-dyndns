@@ -12,13 +12,6 @@ import socket
 import sys
 from urllib2 import urlopen
 
-__author__ = "Jacob Sanford"
-__license__ = "GPL"
-__version__ = "1.0.0"
-__maintainer__ = "Jacob Sanford"
-__email__ = "jacob.josh.sanford@gmail.com"
-__status__ = "Development"
-
 parser = OptionParser()
 parser.add_option('-R', '--record', type='string', dest='record_to_update', help='The A record to update.')
 parser.add_option('-v', '--verbose', dest='verbose', default=False, help='Enable Verbose Output.', action='store_true')
