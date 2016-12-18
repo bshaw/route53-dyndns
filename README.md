@@ -1,5 +1,11 @@
 # Amazon Route53 Dynamic DNS Tool
-Provides a simple dynamic DNS creation and update service via Amazon Route53 and A (alias/subdomain) records.
+A simple dynamic DNS service for Route53.
+
+## Retrieving your external IP
+This service performs a DNS query to retrieve your IP address from an OpenDNS resolver. This method arguably faster and more reliable than using an http(s) service.
+
+Similar functionality could be done via the shell using dig: `dig +short myip.opendns.com @resolver1.opendns.com;`
+
 
 ## Usage
 ```bash
