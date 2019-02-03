@@ -31,23 +31,24 @@ for rdata in resolver.query('myip.opendns.com', 'A'):
     current_ip = str(rdata)
     logging.info('Current IP address: %s', current_ip)
 
-record_to_update = options.record_to_update
-zone_to_update = '.'.join(record_to_update.split('.')[-2:])
+records_to_update = options.records_to_update.split(',')
+zone_to_update = '.'.join(records_to_update.split('.')[-2:])
 
 try:
     socket.inet_aton(current_ip)
     conn = boto.route53.connect_to_region(os.getenv('AWS_CONNECTION_REGION', 'us-east-1'))
     zone = conn.get_zone(zone_to_update)
     for record in zone.get_records():
-        if search(r'<Record:' + record_to_update, str(record)):
-            if current_ip in record.to_print():
-                logging.info('Record IP matches, doing nothing.')
-                sys.exit()
-            logging.info('IP does not match, update needed.')
-            zone.delete_a(record_to_update)
-            zone.add_a(record_to_update, current_ip)
-            sys.exit()
-    logging.info('Record not found, add needed')
-    zone.add_a(record_to_update, current_ip)
+        for record_to_update in records_to_update:
+            if search(r'<Record:' + record_to_update, str(record)):
+                if current_ip in record.to_print():
+                    logging.info('%s IP matches, doing nothing.', record_to_update)
+                else:
+                    logging.info('%s IP does not match, update needed.', record_to_update)
+                    zone.delete_a(record_to_update)
+                    zone.add_a(record_to_update, current_ip)
+            else:
+                logging.info('%s record not found, add needed', record_to_update)
+                zone.add_a(record_to_update, current_ip)
 except socket.error as e:
      print repr(e)
