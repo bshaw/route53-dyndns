@@ -1,5 +1,5 @@
 route53:
-    image: bshaw/route53-dyndns
+    image: bradqwood/route53-dyndns
     container_name: route53
     restart: always
     environment:
