@@ -6,11 +6,9 @@ import boto.route53
 import logging
 import os
 from optparse import OptionParser
-import re
 from re import search
 import socket
 import sys
-from urllib2 import urlopen
 
 parser = OptionParser()
 parser.add_option('-R', '--record', type='string', dest='record_to_update', help='The A record to update.')
