@@ -26,8 +26,8 @@ if options.verbose:
 
 # get external ip
 resolver = dns.resolver.Resolver()
-resolver.nameservers=[socket.gethostbyname('resolver1.opendns.com')]
-for rdata in resolver.query('myip.opendns.com', 'A') :
+resolver.nameservers = [socket.gethostbyname('resolver1.opendns.com')]
+for rdata in resolver.query('myip.opendns.com', 'A'):
     current_ip = str(rdata)
     logging.info('Current IP address: %s', current_ip)
 
