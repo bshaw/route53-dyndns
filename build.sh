@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TAG=1.0.0
+TAG=1.1.0
 IMAGE=bradqwood/route53-dyndns
 
 docker build -t $IMAGE:$TAG .

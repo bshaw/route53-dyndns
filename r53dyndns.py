@@ -1,12 +1,13 @@
 #! /usr/bin/env python
-"""Updates a set of route53-hosted A record(s) with the current ip of the system.
+"""
+Updates a set of route53-hosted A record(s) with the current ip of the system.
 """
 import dns.resolver
 import boto.route53
 import logging
 import os
 from optparse import OptionParser
-from re import search
+from re import sub
 import socket
 import sys
 
@@ -32,23 +33,30 @@ for rdata in resolver.query('myip.opendns.com', 'A'):
     logging.info('Current IP address: %s', current_ip)
 
 records_to_update = options.records_to_update.split(',')
-zone_to_update = '.'.join(records_to_update.split('.')[-2:])
+zone_to_update = '.'.join(records_to_update[0].split('.')[-2:])
 
 try:
     socket.inet_aton(current_ip)
     conn = boto.route53.connect_to_region(os.getenv('AWS_CONNECTION_REGION', 'us-east-1'))
     zone = conn.get_zone(zone_to_update)
-    for record in zone.get_records():
-        for record_to_update in records_to_update:
-            if search(r'<Record:' + record_to_update, str(record)):
+    for record_to_update in records_to_update:
+        record_updated = False
+        for record in zone.get_records():
+            # substitute '*' with '\052' due to boto weirdness
+            # record = sub(r'\052','*', str(record))
+            sub_record_to_update = sub(r'\*',r'\\052',record_to_update)
+            if '<Record:' + sub_record_to_update + '.:A' in str(record)  and not record_updated:
                 if current_ip in record.to_print():
                     logging.info('%s IP matches, doing nothing.', record_to_update)
                 else:
                     logging.info('%s IP does not match, update needed.', record_to_update)
-                    zone.delete_a(record_to_update)
-                    zone.add_a(record_to_update, current_ip)
-            else:
-                logging.info('%s record not found, add needed', record_to_update)
-                zone.add_a(record_to_update, current_ip)
+                    zone.delete_a(sub_record_to_update)
+                    zone.add_a(record_to_update, current_ip,)
+                record_updated = True
+
+        if not record_updated:
+            logging.info('%s record not found, add needed', record_to_update)
+            zone.add_a(record_to_update, current_ip,)
+            record_updated = True
 except socket.error as e:
      print repr(e)
