@@ -11,12 +11,12 @@ import socket
 import sys
 
 parser = OptionParser()
-parser.add_option('-R', '--record', type='string', dest='record_to_update', help='The A record to update.')
+parser.add_option('-R', '--record', type='string', dest='records_to_update', help='The A record(s) to update (comma-separated).')
 parser.add_option('-v', '--verbose', dest='verbose', default=False, help='Enable Verbose Output.', action='store_true')
 (options, args) = parser.parse_args()
 
-if options.record_to_update is None:
-    logging.error('Please specify an A record with the -R switch.')
+if options.records_to_update is None:
+    logging.error('Please specify A record(s) with the -R switch.')
     parser.print_help()
     sys.exit(-1)
 if options.verbose:
