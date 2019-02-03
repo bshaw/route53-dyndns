@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-"""Updates a Route53 hosted A alias record with the current ip of the system.
+"""Updates a set of route53-hosted A record(s) with the current ip of the system.
 """
 import dns.resolver
 import boto.route53
