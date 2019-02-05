@@ -14,6 +14,7 @@ import sys
 parser = OptionParser()
 parser.add_option('-R', '--record', type='string', dest='records_to_update', help='The A record(s) to update (comma-separated).')
 parser.add_option('-v', '--verbose', dest='verbose', default=False, help='Enable Verbose Output.', action='store_true')
+parser.add_option('-T', '--ttl', type='int', dest='ttl', default=300, help='Set record TTL in seconds (default 300).')
 (options, args) = parser.parse_args()
 
 if options.records_to_update is None:
@@ -51,12 +52,12 @@ try:
                 else:
                     logging.info('%s IP does not match, update needed.', record_to_update)
                     zone.delete_a(sub_record_to_update)
-                    zone.add_a(record_to_update, current_ip,)
+                    zone.add_a(record_to_update, current_ip, ttl=options.ttl)
                 record_updated = True
 
         if not record_updated:
             logging.info('%s record not found, add needed', record_to_update)
-            zone.add_a(record_to_update, current_ip,)
+            zone.add_a(record_to_update, current_ip, ttl=options.ttl)
             record_updated = True
 except socket.error as e:
      print repr(e)

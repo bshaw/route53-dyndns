@@ -17,6 +17,7 @@ docker run -d \
     -e AWS_CONNECTION_REGION=us-east-1 \
     -e ROUTE53_DOMAIN_A_RECORDS= \
     -e ROUTE53_UPDATE_FREQUENCY=10800 \
+    -e ROUTE53_RECORD_TTL=300 \
     bradqwood/route53-dyndns
 ```
 
@@ -26,6 +27,7 @@ docker run -d \
 * `AWS_CONNECTION_REGION` - The AWS region for connections
 * `ROUTE53_DOMAIN_A_RECORDS` - The A record(s) to update, such as `myhouse.domain.com,*.domain.com`
 * `ROUTE53_UPDATE_FREQUENCY` - The frequency (in seconds) to check for updates. Unless you have very specific needs, consider using a very large value here.
+* `ROUTE53_RECORD_TTL` - The TTL of the A Record in seconds
 
 ## Credit
 Heavily influenced by:
