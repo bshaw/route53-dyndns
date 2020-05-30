@@ -2,36 +2,61 @@
 
 A simple dynamic DNS service for Route53.
 
-## Retrieving your external IP
+## Requirements
 
-This service performs a DNS query to retrieve your IP address from an OpenDNS resolver. This method arguably faster and more reliable than using an http(s) service.
-
-Similar functionality could be done via the shell using dig: `dig +short myip.opendns.com @resolver1.opendns.com;`
+* Python3 >= 3.6 (Tested on 3.8.2)
+* [Boto3](https://github.com/boto/boto3)
+* [dnspython](https://github.com/rthalley/dnspython)
 
 ## Usage
+
+## Docker
 
 ```bash
 docker run -d \
     --name route53 \
     -e AWS_ACCESS_KEY_ID= \
     -e AWS_SECRET_ACCESS_KEY= \
-    -e AWS_CONNECTION_REGION=us-east-1 \
     -e ROUTE53_DOMAIN_A_RECORD= \
     -e ROUTE53_UPDATE_FREQUENCY=10800 \
     bshaw/route53-dyndns
+```
+
+## Command line
+
+```bash
+python3 r53dyndns.py --help
+usage: r53dyndns.py [-h] [-r RECORD] [-v]
+
+Update a Route53 hosted A record with with current external IP address of the system.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r RECORD, --record RECORD
+                        specify the DNS A record to update
+  -v, --verbose         enable verbose output
+
 ```
 
 ## Required Environment Variables
 
 * `AWS_ACCESS_KEY_ID` - An AWS Access Key
 * `AWS_SECRET_ACCESS_KEY` - An AWS Secret Key
-* `AWS_CONNECTION_REGION` - The AWS region for connections
 * `ROUTE53_DOMAIN_A_RECORD` - The A record to update, such as myhouse.domain.com
 * `ROUTE53_UPDATE_FREQUENCY` - The frequency (in seconds) to check for updates. Unless you have very specific needs, consider using a very large value here.
 
-## Credit
+## Credentials
 
-Heavily influenced by:
+Boto supports multiple ways to supply credentials.
 
-* [JacobSanford/docker-route53-dyndns](https://github.com/JacobSanford/docker-route53-dyndns)
-* [JacobSanford/route-53-dyndns](https://github.com/JacobSanford/route-53-dyndns)
+* When running locally / via the command line, it's easy to rely on a [shared credentials file](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#shared-credentials-file)
+* When using Docker, it is recommended to use [environment variables](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#environment-variable-configuration)
+
+See the official documentation for more details:
+[https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.htm](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.htm)
+
+## Retrieving your external IP
+
+This service performs a DNS query to retrieve your IP address from an OpenDNS resolver. This method arguably faster and more reliable than using an http(s) service.
+
+Similar functionality could be done via the shell using dig: `dig +short myip.opendns.com @resolver1.opendns.com;`

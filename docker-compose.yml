@@ -1,10 +1,9 @@
 route53:
     image: bshaw/route53-dyndns
-    container_name: route53
+    container_name: r53dyndns
     restart: always
     environment:
         - AWS_ACCESS_KEY_ID=
         - AWS_SECRET_ACCESS_KEY=
-        - AWS_CONNECTION_REGION=eu-west-1
         - ROUTE53_DOMAIN_A_RECORD=
         - ROUTE53_UPDATE_FREQUENCY=10800
