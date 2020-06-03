@@ -128,6 +128,7 @@ def main():
     if args.verbose:
         logging.basicConfig(
             level=logging.INFO,
+            format='%(asctime)s %(message)s',
         )
         logging.info('Verbose output enabled')
 
@@ -142,13 +143,13 @@ def main():
     record_ip = get_record_ip(hosted_zone_id, record_to_update)
 
     if current_ip == record_ip:
-        print('IP addresses match - nothing to do')
+        logging.info('IP addresses match - nothing to do')
         exit(0)
 
     status = update_record(hosted_zone_id, record_to_update, current_ip)
 
     if status == 'INSYNC':
-        print(f'Updated A record {record_to_update} in hosted zone {zone_to_update} ({hosted_zone_id}) from {record_ip} to {current_ip}')
+        logging.info(f'Updated A record {record_to_update} in hosted zone {zone_to_update} ({hosted_zone_id}) from {record_ip} to {current_ip}')
 
 
 if __name__ == '__main__':
