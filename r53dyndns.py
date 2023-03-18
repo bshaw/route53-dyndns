@@ -14,7 +14,7 @@ def get_current_ip():
     resolver = dns.resolver.Resolver()
     resolver.nameservers=[socket.gethostbyname('resolver1.opendns.com')]
 
-    for rdata in resolver.query('myip.opendns.com', 'A') :
+    for rdata in resolver.resolve('myip.opendns.com', 'A') :
         current_ip = str(rdata)
 
     logging.info(f'Current IP address: {current_ip}')

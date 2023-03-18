@@ -4,7 +4,7 @@ A simple dynamic DNS service for Route53.
 
 ## Requirements
 
-* Python3 >= 3.6 (Tested on 3.8.2)
+* Python3 (Tested on 3.11.2)
 * [Boto3](https://github.com/boto/boto3)
 * [dnspython](https://github.com/rthalley/dnspython)
 
