@@ -2,6 +2,11 @@
 
 A simple dynamic DNS service for Route53.
 
+| :warning: WARNING          |
+|:---------------------------|
+| The latest version no longer keeps the container running with a sleep script.</br> You should either run on a schedule via cron or as a Kubernetes CronJob.</br> If you want to continue using this the old way, please use the `:3` or `3.0.1` tag.
+|
+
 ## Requirements
 
 * Python3 (Tested on 3.11.2)
@@ -10,16 +15,71 @@ A simple dynamic DNS service for Route53.
 
 ## Usage
 
-## Docker
+### Kubernetes - CronJob
+
+#### Secret
+
+Create a secret containing multiple key-value pairs to store your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
 ```bash
-docker run -d \
+kubectl create secret generic aws-secret --from-literal=AWS_ACCESS_KEY_ID='my_access_-_key_id' --from-literal=AWS_SECRET_ACCESS_KEY='my_secret_access_key'
+```
+
+#### CronJob
+
+Run every 5 minutes for the domain `example.com`, using the values from the secret created above.
+Make sure to set the record to update in the `args` section.
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: route53-dyndns-cron
+spec:
+  schedule: "*/5 * * * * "
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 100
+      template:
+        spec:
+          containers:
+          - image: docker.io/bshaw/route53-dyndns
+            name: route53-dyndns
+            imagePullPolicy: Always
+            envFrom:
+            - secretRef:
+                name: route53-dyndns-secret
+            args:
+            - --record
+            - example.com
+            - --verbose
+          restartPolicy: OnFailure
+```
+
+### Docker / Podman
+
+Run once for the domain `example.com`.
+Make sure to set values for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and the record to update.
+
+```bash
+docker run \
+    --rm \
     --name route53 \
     -e AWS_ACCESS_KEY_ID= \
     -e AWS_SECRET_ACCESS_KEY= \
-    -e ROUTE53_DOMAIN_A_RECORD= \
-    -e ROUTE53_UPDATE_FREQUENCY=10800 \
-    bshaw/route53-dyndns
+    bshaw/route53-dyndns \
+    --record example.com --verbose
+```
+
+### Cron
+
+Add to your crontab / scheduler.
+
+Run every 5 minutes for the domain `example.com`.
+Make sure to set values for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and the record to update.
+
+```plaintext
+*/5 * * * *  docker run --rm --name route53 -e AWS_ACCESS_KEY_ID="access_key_id" -e AWS_SECRET_ACCESS_KEY="secret_access_key" bshaw/route53-dyndns --record example.com --verbose
 ```
 
 ## Command line
@@ -42,8 +102,6 @@ optional arguments:
 
 * `AWS_ACCESS_KEY_ID` - An AWS Access Key
 * `AWS_SECRET_ACCESS_KEY` - An AWS Secret Key
-* `ROUTE53_DOMAIN_A_RECORD` - The A record to update, such as myhouse.domain.com
-* `ROUTE53_UPDATE_FREQUENCY` - The frequency (in seconds) to check for updates. Unless you have very specific needs, consider using a very large value here.
 
 ## Credentials
 
