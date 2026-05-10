@@ -9,11 +9,13 @@ A single-script Python tool (`r53dyndns.py`) that updates a Route53 A record wit
 ## Running locally
 
 ```bash
-pip3 install -r requirements.txt
-python3 r53dyndns.py --record example.com --verbose
+uv sync
+uv run python r53dyndns.py --record example.com --verbose
 ```
 
 AWS credentials are picked up via boto3's standard chain (env vars, `~/.aws/credentials`, IAM role, etc.).
+
+To update dependencies: edit `pyproject.toml`, then `uv lock` to regenerate the lockfile.
 
 ## Building the Docker image
 
@@ -21,6 +23,8 @@ AWS credentials are picked up via boto3's standard chain (env vars, `~/.aws/cred
 docker build -t route53-dyndns .
 docker run --rm -e AWS_ACCESS_KEY_ID=... -e AWS_SECRET_ACCESS_KEY=... route53-dyndns --record example.com --verbose
 ```
+
+The Dockerfile pulls the uv binary, installs deps from the lockfile (`uv sync --frozen --no-dev`), then runs via the venv Python directly (no `uv run` overhead at container start).
 
 The CI workflow (`build-and-push.yml`) builds and pushes multi-arch images (`amd64`, `arm64`, `arm/v7`) to Docker Hub on every push to `master`, weekly on Sundays, and on `workflow_dispatch`.
 
