@@ -37,7 +37,7 @@ jobs:
           push: true
           tags: |
             ${{ github.repository }}:latest
-            ${{ github.repository }}:v5
+            ${{ github.repository }}:5
           platforms: |
             linux/amd64
             linux/arm64
