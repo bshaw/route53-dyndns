@@ -37,9 +37,9 @@ jobs:
           push: true
           tags: |
             ${{ github.repository }}:latest
+            ${{ github.repository }}:v5
           platforms: |
             linux/amd64
             linux/arm64
-            linux/arm/v7
           cache-from: type=gha
           cache-to: type=gha,mode=max

@@ -62,7 +62,7 @@ wheels = [
 
 [[package]]
 name = "route53-dyndns"
-version = "4.0.0"
+version = "5.0.0"
 source = { virtual = "." }
 dependencies = [
     { name = "boto3" },

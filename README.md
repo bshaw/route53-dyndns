@@ -4,12 +4,23 @@ A simple dynamic DNS service for Route53.
 
 | :warning: WARNING          |
 |:---------------------------|
-| The latest version no longer keeps the container running with a sleep script.</br> You should either run on a schedule via cron or as a Kubernetes CronJob.</br> If you want to continue using this the old way, please use the `:3` or `3.0.1` tag.
-|
+| Version 4 and newer no longer keeps the container running with a sleep script.</br> You should either run on a schedule via cron or as a Kubernetes CronJob.</br> If you want to continue using this the old way, use the `:3` or `3.0.1` tag (no longer maintained).|
+
+## Supported Architectures
+
+| Architecture | Supported |
+| --- | --- |
+| `linux/amd64` | Yes |
+| `linux/arm64` | Yes |
+| `linux/arm/v7` | No |
+
+:warning: `arm/v7` (32-bit ARM) support was dropped after `v4.0.0` due to incompatibility with the uv package manager.
+Use `arm64` for modern ARM devices (Raspberry Pi 4 and later).
+If you need `arm/v7`, use the `:4` or `:4.0.0` tag (no longer maintained).
 
 ## Requirements
 
-* Python3 (Tested on 3.11.2)
+* Python3 (Tested on 3.14.4)
 * [Boto3](https://github.com/boto/boto3)
 * [dnspython](https://github.com/rthalley/dnspython)
 
