@@ -10,8 +10,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "moto>=5.2.0",
+    "pytest>=9.0.3",
     "ruff>=0.15.12",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
 
 [tool.ruff]
 target-version = "py314"
