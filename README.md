@@ -97,15 +97,14 @@ Make sure to set values for `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and th
 
 ```bash
 python3 r53dyndns.py --help
-usage: r53dyndns.py [-h] [-r RECORD] [-v]
+usage: r53dyndns.py [-h] -r RECORD [-v]
 
-Update a Route53 hosted A record with with current external IP address of the system.
+Update a Route53 A record with the current external IP address.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -r RECORD, --record RECORD
-                        specify the DNS A record to update
-  -v, --verbose         enable verbose output
+options:
+  -h, --help           show this help message and exit
+  -r, --record RECORD  specify the DNS A record to update
+  -v, --verbose        enable verbose output
 
 ```
 

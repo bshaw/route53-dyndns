@@ -26,7 +26,7 @@ docker run --rm -e AWS_ACCESS_KEY_ID=... -e AWS_SECRET_ACCESS_KEY=... route53-dy
 
 The Dockerfile pulls the uv binary, installs deps from the lockfile (`uv sync --frozen --no-dev`), then runs via the venv Python directly (no `uv run` overhead at container start).
 
-The CI workflow (`build-and-push.yml`) builds and pushes multi-arch images (`amd64`, `arm64`, `arm/v7`) to Docker Hub on every push to `master`, weekly on Sundays, and on `workflow_dispatch`.
+The CI workflow (`build-and-push.yml`) builds and pushes multi-arch images (`amd64`, `arm64`) to Docker Hub on every push to `master`, weekly on Sundays, and on `workflow_dispatch`.
 
 ## Architecture
 
@@ -38,6 +38,14 @@ All logic lives in `r53dyndns.py`. The flow is:
 4. **Compare and UPSERT** — if IPs differ, calls `change_resource_record_sets` with `UPSERT` action and polls until status is `INSYNC`.
 
 The script exits 0 when IPs already match (no-op) or after a successful update, and exits non-zero on errors.
+
+## Running tests
+
+```bash
+uv run pytest -v
+```
+
+Tests use `moto` to mock AWS and `unittest.mock` to mock the DNS resolver — no real credentials or DNS queries needed. Fixtures are in `tests/conftest.py`.
 
 ## Deployment patterns
 
